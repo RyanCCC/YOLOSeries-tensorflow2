@@ -75,7 +75,7 @@ class YOLO(object):
         # 导出onnx model
         if self._export_onnx:
             onnx_model = keras2onnx.convert_keras(self.yolo_model, self.yolo_model.name)
-            onnx.save(onnx_model, './model_data/yolo_onnx.onnx')
+            onnx.save(onnx_model, './model/yolo_onnx.onnx')
 
         # 画框设置不同的颜色
         hsv_tuples = [(x / len(self.class_names), 1., 1.)
@@ -117,7 +117,7 @@ class YOLO(object):
                 K.learning_phase(): 0})
         
         # onnx推理
-        # sess = onnxruntime.InferenceSession('./model_data/yolo_onnx.onnx')
+        # sess = onnxruntime.InferenceSession('./model/yolo_onnx.onnx')
         # x = image_data if isinstance(image_data, list) else [image_data]
         # feed = dict([(input.name, x[n]) for n, input in enumerate(sess.get_inputs())])
         # pred_onnx = sess.run(None, feed)
@@ -128,7 +128,7 @@ class YOLO(object):
         #---------------------------------------------------------#
         #   设置字体
         #---------------------------------------------------------#
-        font = ImageFont.truetype(font='model_data/simhei.ttf',
+        font = ImageFont.truetype(font='data/simhei.ttf',
                     size=np.floor(3e-2 * image.size[1] + 0.5).astype('int32'))
 
         thickness = max((image.size[0] + image.size[1]) // 300, 1)

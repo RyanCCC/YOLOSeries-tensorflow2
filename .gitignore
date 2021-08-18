@@ -5,3 +5,4 @@ villages
 logs
 model_data
 result
+*.h5

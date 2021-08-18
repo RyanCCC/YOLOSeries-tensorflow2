@@ -9,8 +9,8 @@ from nets.yolo import YOLO
 
 if __name__ == "__main__":
     yolo = YOLO(
-        model_path='./model_data/village.h5',
-        anchors_path='./model_data/yolo_anchors.txt',
+        model_path='./model/village.h5',
+        anchors_path='./data/yolo_anchors.txt',
         classes_path='./villages/village.names',
         score=0.5,
         iou=0.3,
