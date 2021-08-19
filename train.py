@@ -121,17 +121,13 @@ def preprocess_true_boxes(true_boxes, input_shape, anchors, num_classes):
     return y_true
 
 if __name__ == "__main__":
-    annotation_path = './village/train.txt'
+    annotation_path = 'D:/Code/AGCIMAIGit/yolov4/villages/train.txt'
     log_dir = 'logs/'
-    classes_path = 'village/village.names'    
-    anchors_path = './model_data/yolo_anchors.txt'
-    weights_path = './model_data/yolo4_weight.h5'
-    save_model_name = 'village.h5'
+    classes_path = 'D:/Code/AGCIMAIGit/yolov4/villages/village.names'    
+    anchors_path = './data/yolo_anchors.txt'
+    weights_path = './model/yolo4_weight.h5'
+    save_model_name = './model/village.h5'
     input_shape = (416,416)
-    #------------------------------------------------------#
-    #   是否对损失进行归一化，用于改变loss的大小
-    #   用于决定计算最终loss是除上batch_size还是除上正样本数量
-    #------------------------------------------------------#
     normalize = False
 
     class_names = get_classes(classes_path)
@@ -139,7 +135,6 @@ if __name__ == "__main__":
     num_classes = len(class_names)
     num_anchors = len(anchors)
     #------------------------------------------------------#
-    #   Yolov4的tricks应用
     #   实际测试时mosaic数据增强并不稳定，所以默认为False
     #   Cosine_scheduler 余弦退火学习率 True or False
     #   label_smoothing 标签平滑 0.01以下一般 如0.01、0.005
@@ -195,13 +190,9 @@ if __name__ == "__main__":
         learning_rate_base  = 1e-3
 
         if Cosine_scheduler:
-            # 预热期
             warmup_epoch    = int((Freeze_epoch-Init_epoch)*0.2)
-            # 总共的步长
             total_steps     = int((Freeze_epoch-Init_epoch) * num_train / batch_size)
-            # 预热步长
             warmup_steps    = int(warmup_epoch * num_train / batch_size)
-            # 学习率
             reduce_lr       = WarmUpCosineDecayScheduler(learning_rate_base=learning_rate_base,
                                                         total_steps=total_steps,
                                                         warmup_learning_rate=1e-4,
@@ -228,7 +219,7 @@ if __name__ == "__main__":
                 epochs=Freeze_epoch,
                 initial_epoch=Init_epoch,
                 callbacks=[logging, checkpoint, reduce_lr, early_stopping])
-        model.save_weights(log_dir + 'trained_weights_stage_1.h5')
+        model.save_weights(save_model_name)
 
     for i in range(freeze_layers): model_body.layers[i].trainable = True
 
@@ -239,13 +230,9 @@ if __name__ == "__main__":
         learning_rate_base  = 1e-4
 
         if Cosine_scheduler:
-            # 预热期
             warmup_epoch = int((Epoch-Freeze_epoch)*0.2)
-            # 总共的步长
             total_steps = int((Epoch-Freeze_epoch) * num_train / batch_size)
-            # 预热步长
             warmup_steps = int(warmup_epoch * num_train / batch_size)
-            # 学习率
             reduce_lr = WarmUpCosineDecayScheduler(learning_rate_base=learning_rate_base,
                                                         total_steps=total_steps,
                                                         warmup_learning_rate=1e-5,
@@ -272,4 +259,4 @@ if __name__ == "__main__":
                 epochs=Epoch,
                 initial_epoch=Freeze_epoch,
                 callbacks=[logging, checkpoint, reduce_lr, early_stopping])
-        model.save_weights(log_dir + 'last1.h5')
+        model.save_weights('./model/last1.h5')
